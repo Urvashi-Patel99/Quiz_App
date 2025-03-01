@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Quiz App</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <style>
+        body {
+            background-color: #121212;
+            color: white;
+        }
+        .center-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .card-custom {
+            background: linear-gradient(135deg, aqua, #ff7eb3);
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            color: white;
+            box-shadow: 0px 4px 10px rgba(255, 118, 136, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <div class="container center-container" id="welcomePage">
+        <div class="card-custom">
+            <h1>Welcome to the Quiz</h1>
+            <button class="btn btn-light mt-3" onclick="showLoginPage()">Get Started</button>
+        </div>
+    </div>
+    
+    <div class="container center-container d-none" id="loginPage">
+        <div class="card-custom">
+            <h2>Login</h2>
+            <input type="text" id="username" class="form-control mb-2" placeholder="Enter your name">
+            <button class="btn btn-light mt-2" onclick="startQuiz()">Submit</button>
+        </div>
+    </div>
+    
+    <div class="container mt-5 quiz-container d-none" id="quizPage">
+        <h3 id="question"></h3>
+        <div id="options" class="row row-cols-2 g-3"></div>
+        <h4 class="mt-4">Score: <span id="score">0</span> / <span id="totalScore">0</span></h4>
+        <button class="btn btn-primary mt-3" onclick="submitQuiz()">Submit Quiz</button>
+    </div>
+    
+    <script>
+        let questions = [
+            { q: "Which SQL statement is used to retrieve data from a database?", options: ["INSERT", "UPDATE", "SELECT", "DELETE"], answer: "SELECT" },
+            { q: "Which SQL clause is used to filter records?", options: ["WHERE", "ORDER BY", "GROUP BY", "HAVING"], answer: "WHERE" },
+            { q: "What is the primary key in a database?", options: ["A unique identifier for a table row", "A key that links two tables", "A mandatory column in every table", "A foreign key reference"], answer: "A unique identifier for a table row" },
+            { q: "Which SQL statement is used to insert new records into a table?", options: ["ADD", "INSERT INTO", "UPDATE", "CREATE"], answer: "INSERT INTO" },
+            { q: "Which SQL function returns the number of records in a table?", options: ["COUNT()", "SUM()", "TOTAL()", "NUMBER()"], answer: "COUNT()" }
+        ];
+        
+        let currentQuestion = 0;
+        let score = 0;
+        
+        function showLoginPage() {
+            document.getElementById("welcomePage").classList.add("d-none");
+            document.getElementById("loginPage").classList.remove("d-none");
+        }
+        
+        function startQuiz() {
+            document.getElementById("loginPage").classList.add("d-none");
+            document.getElementById("quizPage").classList.remove("d-none");
+            document.getElementById("totalScore").innerText = questions.length;
+            loadQuestion();
+        }
+        
+        function loadQuestion() {
+            let q = questions[currentQuestion];
+            document.getElementById("question").innerText = q.q;
+            let optionsHtml = q.options.map(option => 
+                `<button class='btn btn-outline-light col' onclick='checkAnswer("${option}")'>${option}</button>`
+            ).join('');
+            document.getElementById("options").innerHTML = optionsHtml;
+        }
+        
+        function checkAnswer(answer) {
+            if (answer === questions[currentQuestion].answer) {
+                score++;
+                document.getElementById("score").innerText = score;
+            }
+            currentQuestion++;
+            if (currentQuestion < questions.length) {
+                loadQuestion();
+            } else {
+                document.getElementById("quizPage").innerHTML += "<h3 class='mt-4'>Quiz Over! Your Score: " + score + " / " + questions.length + "</h3>";
+            }
+        }
+        
+        function submitQuiz() {
+            alert("Quiz Submitted! Your final score is: " + score + " / " + questions.length);
+        }
+    </script>
+</body>
+</html>
